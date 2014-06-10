@@ -8,6 +8,10 @@
 
 #import "XHBottleViewController.h"
 
+#import "XHFoundationCommon.h"
+
+#import "XHMacro.h"
+
 @interface XHBottleViewController ()
 
 @property (nonatomic, strong) UIImageView *pickerMarkImageView;
@@ -74,7 +78,7 @@
 
 - (UIImageView *)pickerMarkImageView {
     if (!_pickerMarkImageView) {
-        _pickerMarkImageView = [[UIImageView alloc] initWithFrame:self.view.frame];
+        _pickerMarkImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
         _pickerMarkImageView.image = [UIImage imageNamed:@"bottleBkgSpotLight"];
         _pickerMarkImageView.alpha = 0.0;
     }
@@ -113,7 +117,7 @@
     } completion:^(BOOL finished) {
         if (show) {
             [self setupResult];
-            [self performSelector:@selector(showResult) withObject:nil afterDelay:2];
+            [self performSelector:@selector(showResult) withObject:nil afterDelay:0.5];
         }
     }];
 }
@@ -136,7 +140,7 @@
     
     // board
     if (!_boardImageView) {
-        UIImageView *boardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 46, CGRectGetWidth(self.view.bounds), 46)];
+        UIImageView *boardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 46 - [XHFoundationCommon getAdapterHeight], CGRectGetWidth(self.view.bounds), 46)];
         boardImageView.image = [UIImage imageNamed:@"bottleBoard"];
         [self.view addSubview:boardImageView];
         self.boardImageView = boardImageView;
@@ -146,8 +150,8 @@
     CGFloat buttonWidth = 76;
     CGFloat buttonHeight = 86;
     CGFloat insets = 23;
-    CGFloat paddingX = CGRectGetMidX(self.view.frame) - insets - buttonWidth * 1.5;
-    CGFloat paddingY = CGRectGetHeight(self.view.frame) - buttonHeight;
+    CGFloat paddingX = CGRectGetMidX(self.view.bounds) - insets - buttonWidth * 1.5;
+    CGFloat paddingY = CGRectGetHeight(self.view.bounds) - buttonHeight - [XHFoundationCommon getAdapterHeight];
     for (int i = 0; i < 3; i ++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.frame = CGRectMake(paddingX + i * (buttonWidth + insets), paddingY, buttonWidth, buttonHeight);
@@ -187,7 +191,7 @@
     // Do any additional setup after loading the view.
     self.title = NSLocalizedStringFromTable(@"Bottle", @"MessageDisplayKitString", @"漂流瓶");
     
-    [self configureBarbuttonItemStyle:kXHBarbuttonItemSettingStyle action:^{
+    [self configureBarbuttonItemStyle:XHBarbuttonItemStyleSetting action:^{
         DLog(@"漂流瓶设置");
     }];
     

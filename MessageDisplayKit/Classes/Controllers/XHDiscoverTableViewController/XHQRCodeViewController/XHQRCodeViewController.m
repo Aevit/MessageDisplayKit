@@ -16,6 +16,10 @@
 
 #import "XHVideoOutputSampleBufferFactory.h"
 
+#import "XHFoundationCommon.h"
+
+#import "XHMacro.h"
+
 #define kXHScanningButtonPadding 36
 
 @interface XHQRCodeViewController ()
@@ -70,14 +74,14 @@
 
 - (XHScanningView *)scanningView {
     if (!_scanningView) {
-        _scanningView = [[XHScanningView alloc] initWithFrame:CGRectMake(0, (CURRENT_SYS_VERSION >= 7.0 ? 64 : 0), CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - 62)];
+        _scanningView = [[XHScanningView alloc] initWithFrame:CGRectMake(0, (CURRENT_SYS_VERSION >= 7.0 ? 64 : 0), CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - (CURRENT_SYS_VERSION >= 7.0 ? 64 : 44))];
     }
     return _scanningView;
 }
 
 - (UIView *)buttonContainerView {
     if (!_buttonContainerView) {
-        _buttonContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 60, CGRectGetWidth(self.view.bounds), 62)];
+        _buttonContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 62 - [XHFoundationCommon getAdapterHeight], CGRectGetWidth(self.view.bounds), 62)];
         _buttonContainerView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.700];
         
         [_buttonContainerView addSubview:self.scanQRCodeButton];
@@ -96,7 +100,7 @@
         [_scanQRCodeButton setImage:[UIImage imageNamed:@"ScanQRCode_HL"] forState:UIControlStateSelected];
         _scanQRCodeButton.selected = YES;
         [_scanQRCodeButton setTitle:@"扫码" forState:UIControlStateNormal];
-        [_scanQRCodeButton setTitlePositionWithType:kXHTitleBottomType];
+        [_scanQRCodeButton setTitlePositionWithType:XHButtonTitlePostionTypeBottom];
     }
     return _scanQRCodeButton;
 }
@@ -110,7 +114,7 @@
         [_scanBookButton setImage:[UIImage imageNamed:@"ScanBook"] forState:UIControlStateNormal];
         [_scanBookButton setImage:[UIImage imageNamed:@"ScanBook_HL"] forState:UIControlStateSelected];
         [_scanBookButton setTitle:@"封面" forState:UIControlStateNormal];
-        [_scanBookButton setTitlePositionWithType:kXHTitleBottomType];
+        [_scanBookButton setTitlePositionWithType:XHButtonTitlePostionTypeBottom];
     }
     return _scanBookButton;
 }
@@ -124,7 +128,7 @@
         [_scanStreetButton setImage:[UIImage imageNamed:@"ScanStreet"] forState:UIControlStateNormal];
         [_scanStreetButton setImage:[UIImage imageNamed:@"ScanStreet_HL"] forState:UIControlStateSelected];
         [_scanStreetButton setTitle:@"街景" forState:UIControlStateNormal];
-        [_scanStreetButton setTitlePositionWithType:kXHTitleBottomType];
+        [_scanStreetButton setTitlePositionWithType:XHButtonTitlePostionTypeBottom];
     }
     return _scanStreetButton;
 }
@@ -138,7 +142,7 @@
         [_scanWordButton setImage:[UIImage imageNamed:@"ScanWord"] forState:UIControlStateNormal];
         [_scanWordButton setImage:[UIImage imageNamed:@"ScanWord_HL"] forState:UIControlStateSelected];
         [_scanWordButton setTitle:@"翻译" forState:UIControlStateNormal];
-        [_scanWordButton setTitlePositionWithType:kXHTitleBottomType];
+        [_scanWordButton setTitlePositionWithType:XHButtonTitlePostionTypeBottom];
     }
     return _scanWordButton;
 }

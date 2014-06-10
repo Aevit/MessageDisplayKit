@@ -9,6 +9,19 @@ An IM APP like WeChat App has to send text, pictures, audio, video, location mes
 
 It's ok if you don't understand how the code works. Most code has comments, which I believe will help you a lot. Feel free to [open an issue] (https://github.com/xhzengAIB/MessageDisplayKit/issues?state=open) if you have any questions. I will do my best to answer them.
 
+## 开源许可协议
+很多人和我说，你不知道什么是开源许可协议，其实我也不清楚他是不知道还是不想知道，作为一个开发者，不懂得尊重别人的成果，那你到底想怎样，你自己最清楚。                      
+说一件事吧！曾经我也这么做了，没尊重作者的成果，最终被人鄙视了一段时间，于是我删除了那个开源库，现在终于明白，尊重这个词，这对于别人来说是一个认可，我们不可以剥夺这份利益。
+网易新闻App的开发者很厚道，他们有做到这一份尊重，他们是这么做的：                          
+```objc
+UIWebView *librariesWebView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://m.163.com/special/newsclient/ios_libraries.html"]]; // 这里的URL是网易新闻所用的，大家可以点击打开，如果你没有服务器，那你敢直接写个开源库的主页URL嘛？
+[librariesWebView loadRequest:urlRequest];
+[self.view addSubview:librariesWebView];
+```
+我把代码都给上了，哪怕你复制都不愿意，那我就无语了。                                 
+如果您还不知道开源许可协议是怎样的，那你点击[这里](http://m.163.com/special/newsclient/ios_libraries.html)看看网易大神们的节操。                     
+
 ## 组件要求                                        Requirements
 
 * iOS 6.0+ 
@@ -88,13 +101,31 @@ Support pull down load more old message, keep visible cells static when insertin
 * 22、支持摇一摇
 * 23、支持附近的人
 * 24、支持漂流瓶
+* 25、支持多选联系人
+* 26、支持新闻模板嵌套
+* 27、支持弹出Menu菜单
+* 28、支持游戏室展示
+* 29、支持表情商店预览
+
+## How to use
+Easy to drop into your project.                                
+* 1、#import "XHMessageTableViewController.h"                                
+                                
+* 2、Your must be subClass XHMessageTableViewController.                                
+                                
+* 3、implementation XHMessageTableViewController delegate due with message send.                                
+                                
+* 4、implementation XHMessageTableViewController DataSource due with message source.                                
+                                
+* 5、If you went to emotion message / plug function / audio play, must be implementation other delegate or dataSource.                                                                   
+* Detail look this [demo](https://github.com/xhzengAIB/MessageDisplayKit/blob/master/Example/MessageDisplayExample/MessageDisplayExample/XHDemoWeChatMessageTableViewController.m).                           
+
 
 ## License
 
 中文: MessageDisplayKit 是在MIT协议下使用的，可以在LICENSE文件里面找到相关的使用协议信息。
 
 English: MessageDisplayKit is available under the MIT license, see the LICENSE file for more information.     
-
 
 ## 须知       Notes
 如果您在您的项目中使用该开源组件,请给我们发[电子邮件](mailto:xhzengAIB@gmail.com?subject=From%20GitHub%20MessageDisplayKit)告诉我们您的应用程序的名称，谢谢！主要是为了互推的效果，如果您的app火了，请给予少许的回报，如果您的App不火，或许能通过这个开源库了解到您的App！            
@@ -107,17 +138,17 @@ If you use this open source components in your project, please [Email us](mailto
 ## 使用到的第三方组件
 * [PathCover](https://github.com/JackTeam/PathCover)用于朋友圈的下拉刷新。
 * [XHImageViewer](https://github.com/JackTeam/XHImageViewer)图片查看器，用于整个项目。
+* [XHRefreshControl](https://github.com/xhzengAIB/XHRefreshControl)是一款高扩展性、低耦合度的下拉刷新、上提加载更多的组件。用于整个项目的所有下拉刷新和上提加载更多的UI和业务逻辑。    
+* 
+* 谢谢[molon](https://github.com/molon)提供多选组件[MLMultiSelectViewController](https://github.com/molon/MLMultiSelectViewController)，现在已经集成进去了。可用于群聊、添加多个朋友、等等。
+* Thanks you [lakesoft](https://github.com/lakesoft) provide [LKBadgeView](https://github.com/lakesoft/LKBadgeView).
+* Thanks you [kishikawakatsumi](https://github.com/kishikawakatsumi) provide [SECoreTextView](https://github.com/kishikawakatsumi/SECoreTextView).     
 
 ## Thanks Developer
-[我家App](https://itunes.apple.com/us/app/wo-jia-jia-ting-quan-si-mi/id538285014?mt=8)的主程Aevit提供了技术支持，他的[github](https://github.com/Aevit)地址，点击[我家App](https://itunes.apple.com/us/app/wo-jia-jia-ting-quan-si-mi/id538285014?mt=8)下载安装，如果看到里面有好的效果，可以协商开源。
+[我家App](https://itunes.apple.com/us/app/wo-jia-jia-ting-quan-si-mi/id538285014?mt=8)的主程Aevit提供了技术支持，他的[github](https://github.com/Aevit)地址，点击[我家App](https://itunes.apple.com/us/app/wo-jia-jia-ting-quan-si-mi/id538285014?mt=8)下载安装，如果看到里面有好的效果，可以协商开源。                       
+
 
 谢谢[微信App](https://itunes.apple.com/cn/app/wei-xin/id414478124?mt=8)给予我鼓励，我参考了很多框架设计问题、也提供了许多素材，但是请网友不要直接使用素材，我不知道是否会引起侵权的问题，所以请自重，我这里只是模仿微信，而不是攻击。使用该开源库所导致的所有侵权关系与我无关，我只是提供学习机会。                                         
-
-谢谢[kishikawakatsumi](https://github.com/kishikawakatsumi)提供[富文本](https://github.com/kishikawakatsumi/SECoreTextView)组件。      
-
-Thanks you [kishikawakatsumi](https://github.com/kishikawakatsumi) provide [SECoreTextView](https://github.com/kishikawakatsumi/SECoreTextView).                              
-
-Thanks you [lakesoft](https://github.com/lakesoft) provide [LKBadgeView](https://github.com/lakesoft/LKBadgeView).
 
 ## 警告
 请不要拿该工程的所有资源文件用于商业使用，如果不遵守规则，而产生的法律责任，一律与我无关。代码按照上文描述的License 和 Notes来使用。                              

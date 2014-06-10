@@ -14,9 +14,9 @@
 
 #import "XHContactDetailTableViewController.h"
 
-#import "XHAudioPlayerManager.h"
+#import "XHAudioPlayerHelper.h"
 
-@interface XHDemoWeChatMessageTableViewController () <XHAudioPlayerManagerDelegate>
+@interface XHDemoWeChatMessageTableViewController () <XHAudioPlayerHelperDelegate>
 
 @property (nonatomic, strong) NSArray *emotionManagers;
 
@@ -27,7 +27,7 @@
 @implementation XHDemoWeChatMessageTableViewController
 
 - (XHMessage *)getTextMessageWithBubbleMessageType:(XHBubbleMessageType)bubbleMessageType {
-    XHMessage *textMessage = [[XHMessage alloc] initWithText:@"Call Me 15915895880.这是华捷微信，为什么模仿这个页面效果呢？希望微信团队能看到我们在努力，请微信团队给个机会，让我好好的努力靠近大神，希望自己也能发亮，好像有点过分的希望了，如果大家喜欢这个开源库，请大家帮帮忙支持这个开源库吧！我是Jack，叫华仔也行，曾宪华就是我啦！" sender:@"华仔" timestamp:[NSDate distantPast]];
+    XHMessage *textMessage = [[XHMessage alloc] initWithText:@"Call Me 15915895880. 这是华捷微信，为什么模仿这个页面效果呢？希望微信团队能看到我们在努力，请微信团队给个机会，让我好好的努力靠近大神，希望自己也能发亮，好像有点过分的希望了，如果大家喜欢这个开源库，请大家帮帮忙支持这个开源库吧！我是Jack，叫华仔也行，曾宪华就是我啦！" sender:@"华仔" timestamp:[NSDate distantPast]];
     textMessage.avator = [UIImage imageNamed:@"avator"];
     textMessage.avatorUrl = @"http://www.pailixiu.com/jack/meIcon@2x.png";
     textMessage.bubbleMessageType = bubbleMessageType;
@@ -36,7 +36,7 @@
 }
 
 - (XHMessage *)getPhotoMessageWithBubbleMessageType:(XHBubbleMessageType)bubbleMessageType {
-    XHMessage *photoMessage = [[XHMessage alloc] initWithPhoto:[UIImage imageNamed:@"placeholderImage"] thumbnailUrl:@"http://www.pailixiu.com/jack/networkPhoto.png" originPhotoUrl:nil sender:@"Jack" timestamp:[NSDate date]];
+    XHMessage *photoMessage = [[XHMessage alloc] initWithPhoto:[UIImage imageNamed:@"placeholderImage"] thumbnailUrl:@"http://d.hiphotos.baidu.com/image/pic/item/30adcbef76094b361721961da1cc7cd98c109d8b.jpg" originPhotoUrl:nil sender:@"Jack" timestamp:[NSDate date]];
     photoMessage.avator = [UIImage imageNamed:@"avator"];
     photoMessage.avatorUrl = @"http://www.pailixiu.com/jack/JieIcon@2x.png";
     photoMessage.bubbleMessageType = bubbleMessageType;
@@ -55,7 +55,6 @@
 }
 
 - (XHMessage *)getVoiceMessageWithBubbleMessageType:(XHBubbleMessageType)bubbleMessageType {
-//    XHMessage *voiceMessage = [[XHMessage alloc] initWithVoicePath:nil voiceUrl:nil sender:@"Jayson" timestamp:[NSDate date]];
     XHMessage *voiceMessage = [[XHMessage alloc] initWithVoicePath:nil voiceUrl:nil voiceDuration:@"1" sender:@"Jayson" timestamp:[NSDate date]];
     voiceMessage.avator = [UIImage imageNamed:@"avator"];
     voiceMessage.avatorUrl = @"http://www.pailixiu.com/jack/JieIcon@2x.png";
@@ -65,7 +64,7 @@
 }
 
 - (XHMessage *)getEmotionMessageWithBubbleMessageType:(XHBubbleMessageType)bubbleMessageType {
-    XHMessage *emotionMessage = [[XHMessage alloc] initWithEmotionPath:[[NSBundle mainBundle] pathForResource:@"Demo0.gif" ofType:nil] sender:@"Jayson" timestamp:[NSDate date]];
+    XHMessage *emotionMessage = [[XHMessage alloc] initWithEmotionPath:[[NSBundle mainBundle] pathForResource:@"emotion1.gif" ofType:nil] sender:@"Jayson" timestamp:[NSDate date]];
     emotionMessage.avator = [UIImage imageNamed:@"avator"];
     emotionMessage.avatorUrl = @"http://www.pailixiu.com/jack/JieIcon@2x.png";
     emotionMessage.bubbleMessageType = bubbleMessageType;
@@ -115,6 +114,11 @@
     });
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[XHAudioPlayerHelper shareInstance] stopAudio];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -142,10 +146,10 @@
         XHEmotionManager *emotionManager = [[XHEmotionManager alloc] init];
         emotionManager.emotionName = [NSString stringWithFormat:@"表情%ld", (long)i];
         NSMutableArray *emotions = [NSMutableArray array];
-        for (NSInteger j = 0; j < 32; j ++) {
+        for (NSInteger j = 0; j < 18; j ++) {
             XHEmotion *emotion = [[XHEmotion alloc] init];
             NSString *imageName = [NSString stringWithFormat:@"section%ld_emotion%ld", (long)i , (long)j % 16];
-            emotion.emotionPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Demo%ld.gif", (long)j % 2] ofType:@""];
+            emotion.emotionPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"emotion%ld.gif", (long)j] ofType:@""];
             emotion.emotionConverPhoto = [UIImage imageNamed:imageName];
             [emotions addObject:emotion];
         }
@@ -171,6 +175,7 @@
 
 - (void)dealloc {
     self.emotionManagers = nil;
+    [[XHAudioPlayerHelper shareInstance] setDelegate:nil];
 }
 
 /*
@@ -183,8 +188,8 @@
 - (void)multiMediaMessageDidSelectedOnMessage:(id<XHMessageModel>)message atIndexPath:(NSIndexPath *)indexPath onMessageTableViewCell:(XHMessageTableViewCell *)messageTableViewCell {
     UIViewController *disPlayViewController;
     switch (message.messageMediaType) {
-        case XHBubbleMessageVideo:
-        case XHBubbleMessagePhoto: {
+        case XHBubbleMessageMediaTypeVideo:
+        case XHBubbleMessageMediaTypePhoto: {
             DLog(@"message : %@", message.photo);
             DLog(@"message : %@", message.videoConverPhoto);
             XHDisplayMediaViewController *messageDisplayTextView = [[XHDisplayMediaViewController alloc] init];
@@ -193,31 +198,27 @@
             break;
         }
             break;
-        case XHBubbleMessageVoice: {
+        case XHBubbleMessageMediaTypeVoice: {
             DLog(@"message : %@", message.voicePath);
-            /*
-            [messageTableViewCell.messageBubbleView.animationVoiceImageView startAnimating];
-            [messageTableViewCell.messageBubbleView.animationVoiceImageView performSelector:@selector(stopAnimating) withObject:nil afterDelay:3];
-             */
-            [[SCAudioPlayerManager shareInstance] setDelegate:self];
+            [[XHAudioPlayerHelper shareInstance] setDelegate:self];
             if (_currentSelectedCell) {
                 [_currentSelectedCell.messageBubbleView.animationVoiceImageView stopAnimating];
             }
             if (_currentSelectedCell == messageTableViewCell) {
                 [messageTableViewCell.messageBubbleView.animationVoiceImageView stopAnimating];
-                [[SCAudioPlayerManager shareInstance] stopAudio];
+                [[XHAudioPlayerHelper shareInstance] stopAudio];
                 self.currentSelectedCell = nil;
             } else {
                 self.currentSelectedCell = messageTableViewCell;
                 [messageTableViewCell.messageBubbleView.animationVoiceImageView startAnimating];
-                [[SCAudioPlayerManager shareInstance] managerAudioWithFileName:message.voicePath toPlay:YES];
+                [[XHAudioPlayerHelper shareInstance] managerAudioWithFileName:message.voicePath toPlay:YES];
             }
             break;
         }
-        case XHBubbleMessageFace:
+        case XHBubbleMessageMediaTypeEmotion:
             DLog(@"facePath : %@", message.emotionPath);
             break;
-        case XHBubbleMessageLocalPosition: {
+        case XHBubbleMessageMediaTypeLocalPosition: {
             DLog(@"facePath : %@", message.localPositionPhoto);
             XHDisplayLocationViewController *displayLocationViewController = [[XHDisplayLocationViewController alloc] init];
             displayLocationViewController.message = message;
@@ -252,7 +253,8 @@
     
 }
 
-#pragma mark - SCAudioPlayerManager delegate
+#pragma mark - XHAudioPlayerHelper Delegate
+
 - (void)didAudioPlayerStopPlay:(AVAudioPlayer *)audioPlayer {
     if (!_currentSelectedCell) {
         return;
@@ -282,8 +284,8 @@
 }
 
 - (void)loadMoreMessagesScrollTotop {
-    if (!self.loadMoreMessage) {
-        self.loadMoreMessage = YES;
+    if (!self.loadingMoreMessage) {
+        self.loadingMoreMessage = YES;
         
         WEAKSELF
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -291,7 +293,7 @@
             sleep(2);
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf insertOldMessages:messages];
-                weakSelf.loadMoreMessage = NO;
+                weakSelf.loadingMoreMessage = NO;
             });
         });
     }
@@ -309,7 +311,7 @@
     textMessage.avator = [UIImage imageNamed:@"avator"];
     textMessage.avatorUrl = @"http://www.pailixiu.com/jack/meIcon@2x.png";
     [self addMessage:textMessage];
-    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageText];
+    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageMediaTypeText];
 }
 
 /**
@@ -324,7 +326,7 @@
     photoMessage.avator = [UIImage imageNamed:@"avator"];
     photoMessage.avatorUrl = @"http://www.pailixiu.com/jack/meIcon@2x.png";
     [self addMessage:photoMessage];
-    [self finishSendMessageWithBubbleMessageType:XHBubbleMessagePhoto];
+    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageMediaTypePhoto];
 }
 
 /**
@@ -339,7 +341,7 @@
     videoMessage.avator = [UIImage imageNamed:@"avator"];
     videoMessage.avatorUrl = @"http://www.pailixiu.com/jack/meIcon@2x.png";
     [self addMessage:videoMessage];
-    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageVideo];
+    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageMediaTypeVideo];
 }
 
 /**
@@ -355,7 +357,7 @@
     voiceMessage.avator = [UIImage imageNamed:@"avator"];
     voiceMessage.avatorUrl = @"http://www.pailixiu.com/jack/meIcon@2x.png";
     [self addMessage:voiceMessage];
-    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageVoice];
+    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageMediaTypeVoice];
 }
 
 /**
@@ -370,7 +372,7 @@
     emotionMessage.avator = [UIImage imageNamed:@"avator"];
     emotionMessage.avatorUrl = @"http://www.pailixiu.com/jack/meIcon@2x.png";
     [self addMessage:emotionMessage];
-    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageFace];
+    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageMediaTypeEmotion];
 }
 
 /**
@@ -381,7 +383,7 @@
     geoLocationsMessage.avator = [UIImage imageNamed:@"avator"];
     geoLocationsMessage.avatorUrl = @"http://www.pailixiu.com/jack/meIcon@2x.png";
     [self addMessage:geoLocationsMessage];
-    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageLocalPosition];
+    [self finishSendMessageWithBubbleMessageType:XHBubbleMessageMediaTypeLocalPosition];
 }
 
 /**

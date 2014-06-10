@@ -9,7 +9,7 @@
 #import "XHDisplayMediaViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
 
-#import "UIView+XHNetworkImage.h"
+#import "UIView+XHRemoteImage.h"
 
 @interface XHDisplayMediaViewController ()
 
@@ -43,15 +43,15 @@
 
 - (void)setMessage:(id<XHMessageModel>)message {
     _message = message;
-    if ([message messageMediaType] == XHBubbleMessageVideo) {
+    if ([message messageMediaType] == XHBubbleMessageMediaTypeVideo) {
         self.title = NSLocalizedStringFromTable(@"Video", @"MessageDisplayKitString", @"详细视频");
         self.moviePlayerController.contentURL = [NSURL fileURLWithPath:[message videoPath]];
         [self.moviePlayerController play];
-    } else if ([message messageMediaType] == XHBubbleMessagePhoto) {
+    } else if ([message messageMediaType] ==XHBubbleMessageMediaTypePhoto) {
         self.title = NSLocalizedStringFromTable(@"Photo", @"MessageDisplayKitString", @"详细照片");
         self.photoImageView.image = message.photo;
         if (message.thumbnailUrl) {
-            [self.photoImageView setImageUrl:[message thumbnailUrl]];
+            [self.photoImageView setImageWithURL:[NSURL URLWithString:[message thumbnailUrl]] placeholer:[UIImage imageNamed:@"placeholderImage"]];
         }
     }
 }
@@ -60,7 +60,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if ([self.message messageMediaType] == XHBubbleMessageVideo) {
+    if ([self.message messageMediaType] == XHBubbleMessageMediaTypeVideo) {
         [self.moviePlayerController stop];
     }
 }
